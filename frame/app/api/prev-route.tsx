@@ -6,7 +6,7 @@ import { createWalletClient, http, createPublicClient } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { baseSepolia } from "viem/chains";
 import { PinataFDK } from "pinata-fdk";
-import abi from "./abi.json";
+// import abi from "./abi.json";
 
 /**************************
  * Inital Setup
@@ -54,7 +54,7 @@ const walletClient = createWalletClient({
  **************************/
 
 type State = {
-  currentWire: 0 | 1 | 2 | 3;
+  step: 0 | 1 | 2 | 3;
   buttons: string[];
   // cutWires: String[];
 };
@@ -81,12 +81,10 @@ async function checkBalance(address: any) {
   }
 }
 
-// NEEDS EDIT???
 const app = new Frog<{ State: State }>({
   initialState: {
-    currentWire: 0,
+    step: 0,
     buttons: ["red", "blue", "green", "yellow"],
-    // cutWires: [],
   },
   assetsPath: "/",
   basePath: "/api",
@@ -109,9 +107,13 @@ const app = new Frog<{ State: State }>({
 app.frame("/", async (c) => {
   // Welcome screen
   // one button to `play` - smart contract collects fee
+  const { deriveState } = c;
+  const state = deriveState((previousState) => {
+    // reset `step` to 0
+    previousState.step = 0;
+  });
   return c.res({
-    // button click directs frame to wire1 route
-    action: "/wire1",
+    action: "/wire1", // button click directs frame to wire1 route
     image: (
       <div style={{ color: "white", display: "flex", fontSize: 60 }}>
         Defuse the bomb to win!
@@ -152,11 +154,9 @@ app.transaction("/collect", async (c) => {
 app.frame("/wire1", (c) => {
   // First game screen
   // server calculates 0.75 chance of success
-  // check if previousState.currentWire === 1
-  // if not then direct to welcome screen
   const { deriveState } = c;
   const state = deriveState((previousState) => {
-    previousState.currentWire++;
+    previousState.step = 1;
   });
   return c.res({
     action: "/wire2",
@@ -172,51 +172,68 @@ app.frame("/wire1", (c) => {
 app.frame("/wire2", (c) => {
   // Second game screen
   // the second time, server calculates only 0.66 chance of success
-  // check if previousState.currentWire === 2
-  // if not then direct to welcome screen
-  const { deriveState, buttonValue } = c;
-  const state = deriveState((previousState) => {
-    previousState.buttons = previousState.buttons.filter(
-      (btn) => btn !== buttonValue,
-    );
-    previousState.currentWire = 2;
-    // if (previousState.currentWire === 0) {
-    //   previousState.currentWire = 1;
-    // }
-  });
-  // if (state.currentWire === 1) {} else {}
-  return c.res({
-    action: "/wire3",
-    image: (
-      <div style={{ color: "white", display: "flex", fontSize: 60 }}>
-        Cut a wire
-      </div>
-    ),
-    intents: state.buttons.map((btn) => <Button value={btn}>{btn}</Button>),
-  });
+  const { deriveState, buttonValue, previousState } = c;
+  if (previousState.step !== 1) {
+    // check if previousState.step === 1
+    // if not then direct to welcome screen
+    return c.res({
+      browserLocation: "/",
+      image: (
+        <div style={{ color: "white", display: "flex", fontSize: 60 }}>
+          redirect to home
+        </div>
+      ),
+    });
+  } else {
+    const state = deriveState((previousState) => {
+      previousState.buttons = previousState.buttons.filter(
+        (btn) => btn !== buttonValue,
+      );
+      previousState.step = 2;
+    });
+    return c.res({
+      action: "/wire3",
+      image: (
+        <div style={{ color: "white", display: "flex", fontSize: 60 }}>
+          Cut a wire
+        </div>
+      ),
+      intents: state.buttons.map((btn) => <Button value={btn}>{btn}</Button>),
+    });
+  }
 });
 
 app.frame("/wire3", async (c) => {
   // Third game screen
-  const { deriveState, buttonValue } = c;
-  const state = deriveState((previousState) => {
-    previousState.buttons = previousState.buttons.filter(
-      (btn) => btn !== buttonValue,
-    );
-    previousState.currentWire = 2;
-    // if (previousState.currentWire === 0) {
-    //   previousState.currentWire = 1;
-    // }
-  });
-  // if (state.currentWire === 1) {} else {}
-  return c.res({
-    image: (
-      <div style={{ color: "white", display: "flex", fontSize: 60 }}>
-        Cut a wire
-      </div>
-    ),
-    intents: state.buttons.map((btn) => <Button value={btn}>{btn}</Button>),
-  });
+  // the second time, server calculates only 0.50 chance of success
+  const { deriveState, buttonValue, previousState } = c;
+  if (previousState.step !== 2) {
+    // check if previousState.step === 2
+    // if not then direct to welcome screen
+    return c.res({
+      browserLocation: "/",
+      image: (
+        <div style={{ color: "white", display: "flex", fontSize: 60 }}>
+          redirect to home
+        </div>
+      ),
+    });
+  } else {
+    const state = deriveState((previousState) => {
+      previousState.buttons = previousState.buttons.filter(
+        (btn) => btn !== buttonValue,
+      );
+      previousState.step = 3;
+    });
+    return c.res({
+      image: (
+        <div style={{ color: "white", display: "flex", fontSize: 60 }}>
+          Cut a wire
+        </div>
+      ),
+      intents: state.buttons.map((btn) => <Button value={btn}>{btn}</Button>),
+    });
+  }
 });
 
 app.frame("/success", async (c) => {
