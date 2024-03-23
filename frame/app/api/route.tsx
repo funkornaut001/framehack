@@ -152,6 +152,8 @@ app.transaction("/collect", async (c) => {
 app.frame("/wire1", (c) => {
   // First game screen
   // server calculates 0.75 chance of success
+  // check if previousState.currentWire === 1
+  // if not then direct to welcome screen
   const { deriveState } = c;
   const state = deriveState((previousState) => {
     previousState.currentWire++;
@@ -170,6 +172,8 @@ app.frame("/wire1", (c) => {
 app.frame("/wire2", (c) => {
   // Second game screen
   // the second time, server calculates only 0.66 chance of success
+  // check if previousState.currentWire === 2
+  // if not then direct to welcome screen
   const { deriveState, buttonValue } = c;
   const state = deriveState((previousState) => {
     previousState.buttons = previousState.buttons.filter(
