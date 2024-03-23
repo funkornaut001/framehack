@@ -8,7 +8,7 @@ import { createWalletClient, http, createPublicClient } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { baseSepolia } from 'viem/chains';
 import { PinataFDK } from 'pinata-fdk';
-import { determineWinner } from '../../game/logic';
+import { cutWire } from '../../game/logic';
 // import abi from './abi.json';
 
 /**************************
@@ -179,7 +179,7 @@ app.frame('/wire2', (c) => {
     });
   }
 
-  // const isSafe = determineWinner(previousState.step);
+  // const isSafe = cutWire(previousState.step);
 
   const state = deriveState((previousState) => {
     previousState.buttons = previousState.buttons.filter(
