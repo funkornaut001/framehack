@@ -121,7 +121,7 @@ async function claimWinnings(gameNonce: bigint) {
       functionName: "claimWinnings",
       args: [nonce]
     });
-    const transaction = await ownerWalletClient.writeContract(request);
+    const transaction = await walletClient.writeContract(request);
     // definitely need some mechanism to check whether transfer was successful
     const receipt = await publicClient.waitForTransactionReceipt({
       hash: transaction
