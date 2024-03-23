@@ -93,11 +93,11 @@ const app = new Frog<{ State: State }>({
 app.frame('/', async (c) => {
   // Welcome screen
   // one button to `play` - smart contract collects fee
-  // const { deriveState } = c;
-  // const state = deriveState((previousState) => {
-  //   // reset `step` to 0
-  //   previousState.step = 0;
-  // });
+  const { deriveState } = c;
+  const state = deriveState((previousState) => {
+    // reset `step` to 0
+    previousState.step = 0;
+  });
   return c.res({
     action: '/wire1', // button click directs frame to wire1 route
     image: (
@@ -106,11 +106,15 @@ app.frame('/', async (c) => {
       </div>
     ),
     intents: [
-      // transaction button triggers value send
-      <Button.Transaction target="/collect">
-        Play for 0.00069 ETH
-      </Button.Transaction>,
+      // test button
+      <Button>Play for 0.00069 ETH</Button>,
     ],
+    // intents: [
+    //   // transaction button triggers value send
+    //   <Button.Transaction target="/collect">
+    //     Play for 0.00069 ETH
+    //   </Button.Transaction>,
+    // ],
     title: 'Defuse The Bomb!',
   });
 });
@@ -225,6 +229,7 @@ app.frame('/wire3', async (c) => {
 // app.frame('/success', (c) => {
 //   // Winner screen
 //   // Call contract - Winner!
+//   //
 //   // one button to claim prize (pull from smart contract)
 // });
 
