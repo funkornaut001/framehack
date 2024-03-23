@@ -61,7 +61,7 @@ const CONTRACT =
 // }
 
 type State = {
-  step: 0 | 1 | 2 | 3;
+  step: 0 | 1 | 2 | 3 | 4;
   buttons: string[];
 };
 
@@ -91,8 +91,9 @@ const app = new Frog<{ State: State }>({
 app.frame('/', async (c) => {
   // Welcome screen
   const { deriveState } = c;
-  const state = deriveState((previousState) => {
-    // reset `step` to 0
+  deriveState((previousState) => {
+    // Reset state for when a player "plays again"
+    previousState.buttons = ['red', 'blue', 'green', 'yellow'];
     previousState.step = 0;
   });
   return c.res({
@@ -104,7 +105,7 @@ app.frame('/', async (c) => {
     ),
     intents: [
       // test button
-      <Button>Play for 0.00069 SEP ETH</Button>,
+      <Button>Play for 0.00069 SEP ETH TEST BUTTON</Button>,
       // <Button>Play for 0.00069 ETH</Button>,
     ],
     // intents: [
@@ -141,10 +142,25 @@ app.transaction('/collect', async (c) => {
 
 app.frame('/wire1', (c) => {
   // First game screen
-  const { deriveState } = c;
+  const { deriveState, previousState } = c;
+  // NOTE: Need to gate based on completed payment transaction
+  if (someCondition) {
+    // if not then direct to welcome screen
+    return c.res({
+      action: '/',
+      image: (
+        <div style={{ color: 'white', display: 'flex', fontSize: 60 }}>
+          Looks like some wires got crossed...
+        </div>
+      ),
+      intents: [<Button>Go Home</Button>],
+    });
+  }
+
   const state = deriveState((previousState) => {
     previousState.step = 1;
   });
+
   return c.res({
     action: '/wire2',
     image: (
@@ -193,6 +209,7 @@ app.frame('/wire2', (c) => {
     );
     previousState.step = 2;
   });
+
   return c.res({
     action: '/wire3',
     image: (
@@ -285,8 +302,9 @@ app.frame('/final', (c) => {
   }
 
   const state = deriveState((previousState) => {
-    // reset buttons array back to full
+    // reset state after winning - prevent URL jumping
     previousState.buttons = ['red', 'blue', 'green', 'yellow'];
+    previousState.step = 4;
   });
 
   // Call contract - Winner!
