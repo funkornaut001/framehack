@@ -39,15 +39,6 @@ const CONTRACT =
 // });
 
 /**************************
- * State
- **************************/
-
-type State = {
-  step: 0 | 1 | 2 | 3;
-  buttons: string[];
-};
-
-/**************************
  * Util Functions
  **************************/
 
@@ -68,6 +59,11 @@ type State = {
 //     return error;
 //   }
 // }
+
+type State = {
+  step: 0 | 1 | 2 | 3;
+  buttons: string[];
+};
 
 const app = new Frog<{ State: State }>({
   initialState: {
@@ -94,7 +90,6 @@ const app = new Frog<{ State: State }>({
 
 app.frame('/', async (c) => {
   // Welcome screen
-  // one button to `play` - smart contract collects fee
   const { deriveState } = c;
   const state = deriveState((previousState) => {
     // reset `step` to 0
@@ -146,7 +141,6 @@ app.transaction('/collect', async (c) => {
 
 app.frame('/wire1', (c) => {
   // First game screen
-  // server calculates 0.75 chance of success
   const { deriveState } = c;
   const state = deriveState((previousState) => {
     previousState.step = 1;
@@ -164,7 +158,6 @@ app.frame('/wire1', (c) => {
 
 app.frame('/wire2', (c) => {
   // Second game screen
-  // the second time, server calculates only 0.66 chance of success
   const { deriveState, buttonValue, previousState } = c;
   if (previousState.step !== 1) {
     // check if previousState.step === 1
@@ -180,7 +173,19 @@ app.frame('/wire2', (c) => {
     });
   }
 
-  // const isSafe = cutWire(previousState.step);
+  const isSafe = cutWire(previousState.step);
+  if (!isSafe) {
+    // boom
+    return c.res({
+      action: '/',
+      image: (
+        <div style={{ color: 'white', display: 'flex', fontSize: 60 }}>
+          Boom!
+        </div>
+      ),
+      intents: [<Button>Go Home</Button>],
+    });
+  }
 
   const state = deriveState((previousState) => {
     previousState.buttons = previousState.buttons.filter(
@@ -201,7 +206,6 @@ app.frame('/wire2', (c) => {
 
 app.frame('/wire3', async (c) => {
   // Third game screen
-  // the second time, server calculates only 0.50 chance of success
   const { deriveState, buttonValue, previousState } = c;
   if (previousState.step !== 2) {
     // check if previousState.step === 2
@@ -217,13 +221,29 @@ app.frame('/wire3', async (c) => {
     });
   }
 
+  const isSafe = cutWire(previousState.step);
+  if (!isSafe) {
+    // boom
+    return c.res({
+      action: '/',
+      image: (
+        <div style={{ color: 'white', display: 'flex', fontSize: 60 }}>
+          Boom!
+        </div>
+      ),
+      intents: [<Button>Go Home</Button>],
+    });
+  }
+
   const state = deriveState((previousState) => {
     previousState.buttons = previousState.buttons.filter(
       (btn) => btn !== buttonValue
     );
     previousState.step = 3;
   });
+
   return c.res({
+    action: '/final',
     image: (
       <div style={{ color: 'white', display: 'flex', fontSize: 60 }}>
         Cut a wire
@@ -233,18 +253,80 @@ app.frame('/wire3', async (c) => {
   });
 });
 
-// app.frame('/success', (c) => {
-//   // Winner screen
-//   // Call contract - Winner!
-//   //
-//   // one button to claim prize (pull from smart contract)
-// });
+app.frame('/final', (c) => {
+  // Final screen
+  const { deriveState, buttonValue, previousState } = c;
+  if (previousState.step !== 3) {
+    // check if previousState.step === 3
+    // if not then direct to welcome screen
+    return c.res({
+      action: '/',
+      image: (
+        <div style={{ color: 'white', display: 'flex', fontSize: 60 }}>
+          Looks like some wires got crossed...
+        </div>
+      ),
+      intents: [<Button>Go Home</Button>],
+    });
+  }
 
-// app.frame('/gameover', (c) => {
-//   // Game over screen
-//   // Call contract - Loser
-//   // one button to play again
-// });
+  const isSafe = cutWire(previousState.step);
+  if (!isSafe) {
+    // boom
+    return c.res({
+      action: '/',
+      image: (
+        <div style={{ color: 'white', display: 'flex', fontSize: 60 }}>
+          Boom!
+        </div>
+      ),
+      intents: [<Button>Go Home</Button>],
+    });
+  }
+
+  const state = deriveState((previousState) => {
+    // reset buttons array back to full
+    previousState.buttons = ['red', 'blue', 'green', 'yellow'];
+  });
+
+  // Call contract - Winner!
+  // one button to claim prize (pull from smart contract)
+  return c.res({
+    action: '/',
+    image: (
+      <div style={{ color: 'white', display: 'flex', fontSize: 60 }}>
+        Winner!
+      </div>
+    ),
+    intents: [
+      <Button.Transaction target="/payout">Collect Payout</Button.Transaction>,
+      <Button>Play Again!</Button>,
+    ],
+  });
+});
+
+app.transaction('/payout', async (c) => {
+  // Send winnings to user
+  // how much?
+  const payout = 0;
+
+  return c.send({
+    // @ts-ignore
+    chainId: 'eip155:84532', // base sepolia testnet
+    to: '0xaddress', // contract address
+    value: parseEther(`${payout}`),
+  });
+
+  // return c.contract({
+  //   abi: abi.abi,
+  //   // @ts-ignore
+  //   chainId: "eip155:84532",
+  //   functionName: "start-game",
+  //   args: [c.frameData?.fid],
+  //   to: CONTRACT,
+  //   value: parseEther(`${fee}`),
+  // });
+});
 
 /**************************
  * End of the file exports
