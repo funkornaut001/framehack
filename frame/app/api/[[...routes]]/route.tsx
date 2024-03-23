@@ -8,6 +8,7 @@ import { createWalletClient, http, createPublicClient } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { baseSepolia } from 'viem/chains';
 import { PinataFDK } from 'pinata-fdk';
+import { determineWinner } from '../../game/logic';
 // import abi from './abi.json';
 
 /**************************
@@ -176,23 +177,25 @@ app.frame('/wire2', (c) => {
       ),
       intents: [<Button>Go Home</Button>],
     });
-  } else {
-    const state = deriveState((previousState) => {
-      previousState.buttons = previousState.buttons.filter(
-        (btn) => btn !== buttonValue
-      );
-      previousState.step = 2;
-    });
-    return c.res({
-      action: '/wire3',
-      image: (
-        <div style={{ color: 'white', display: 'flex', fontSize: 60 }}>
-          Cut a wire
-        </div>
-      ),
-      intents: state.buttons.map((btn) => <Button value={btn}>{btn}</Button>),
-    });
   }
+
+  // const isSafe = determineWinner(previousState.step);
+
+  const state = deriveState((previousState) => {
+    previousState.buttons = previousState.buttons.filter(
+      (btn) => btn !== buttonValue
+    );
+    previousState.step = 2;
+  });
+  return c.res({
+    action: '/wire3',
+    image: (
+      <div style={{ color: 'white', display: 'flex', fontSize: 60 }}>
+        Cut a wire
+      </div>
+    ),
+    intents: state.buttons.map((btn) => <Button value={btn}>{btn}</Button>),
+  });
 });
 
 app.frame('/wire3', async (c) => {
@@ -211,22 +214,22 @@ app.frame('/wire3', async (c) => {
       ),
       intents: [<Button>Go Home</Button>],
     });
-  } else {
-    const state = deriveState((previousState) => {
-      previousState.buttons = previousState.buttons.filter(
-        (btn) => btn !== buttonValue
-      );
-      previousState.step = 3;
-    });
-    return c.res({
-      image: (
-        <div style={{ color: 'white', display: 'flex', fontSize: 60 }}>
-          Cut a wire
-        </div>
-      ),
-      intents: state.buttons.map((btn) => <Button value={btn}>{btn}</Button>),
-    });
   }
+
+  const state = deriveState((previousState) => {
+    previousState.buttons = previousState.buttons.filter(
+      (btn) => btn !== buttonValue
+    );
+    previousState.step = 3;
+  });
+  return c.res({
+    image: (
+      <div style={{ color: 'white', display: 'flex', fontSize: 60 }}>
+        Cut a wire
+      </div>
+    ),
+    intents: state.buttons.map((btn) => <Button value={btn}>{btn}</Button>),
+  });
 });
 
 // app.frame('/success', (c) => {
