@@ -3,7 +3,6 @@
 pragma solidity 0.8.23;
 
 import {Ownable} from "openzeppelin-contracts/contracts/access/Ownable.sol";
-import {IERC20} from "openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 
 contract BombGame is Ownable {
 
@@ -14,6 +13,8 @@ contract BombGame is Ownable {
     error BombGame__AlreadyClaimed();
     error BombGame__InsufficientBalance();
     error BombGame__TransferFailed();
+    error BombGame__OnlyHouse();
+    error BombGame__NoHouseTake();
 
     uint256 public constant ENTRY_FEE = 0.00069 ether;
     
@@ -25,11 +26,11 @@ contract BombGame is Ownable {
      */
     uint256 public constant WIN_PERCENTAGE = 6942; 
     uint256 public constant HOUSE_CUT = 1000;
-    // uint256 public constant REMAINING_PERCENTAGE = 2058; // don't need?
     uint256 public constant PRECISION = 10000; // all percentages expressed in basis points
 
     uint256 public prizePool;
     uint256 public houseTake;
+    address public immutable house;
 
     /**
      * @notice incremented each time a player wins
@@ -47,7 +48,8 @@ contract BombGame is Ownable {
     event PoolFunded(uint256 amount);
     event HouseTakeWithdrawn(address indexed recipient, uint256 amount);
 
-    constructor() Ownable(msg.sender) payable {
+    constructor(address _owner, address _house) Ownable(_owner) payable {
+        house = _house;
         prizePool = msg.value;
     }
 
@@ -97,7 +99,9 @@ contract BombGame is Ownable {
         emit PoolFunded(msg.value);
     }
 
-    function withdrawHouseTake(address _recipient) external onlyOwner {
+    function withdrawHouseTake(address _recipient) external {
+        if (msg.sender != house) revert BombGame__OnlyHouse();
+        if (houseTake == 0) revert BombGame__NoHouseTake();
         uint256 amount = houseTake;
         houseTake = 0;
         emit HouseTakeWithdrawn(_recipient, amount);

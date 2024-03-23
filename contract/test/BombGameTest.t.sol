@@ -11,6 +11,7 @@ contract BombGameTest is Test {
     BombGame public game;
 
     address public owner = makeAddr("owner");
+    address public house = makeAddr("house");
     address public admin = makeAddr("admin");
     uint256 public INITIAL_POOL = 10 ether;
 
@@ -36,7 +37,7 @@ contract BombGameTest is Test {
         }
 
         vm.prank(owner);
-        game = new BombGame{value: INITIAL_POOL}();
+        game = new BombGame{value: INITIAL_POOL}(owner, house);
         entryFee = game.ENTRY_FEE();
     }
 
@@ -213,19 +214,43 @@ contract BombGameTest is Test {
         assertEq(game.prizePool(), poolBefore + fundAmount);
     }
 
-    function test_withdrawHouseTake() public {
+    function test_withdrawHouseTake() public threePlayersEntered {
+        vm.prank(owner);
+        game.endGame(alice, true);
+
         uint256 contractBalBefore = address(game).balance;
         uint256 houseTakeBefore = game.houseTake();
         uint256 recipientBalBefore = admin.balance;
 
         vm.expectEmit(address(game));
         emit HouseTakeWithdrawn(admin, houseTakeBefore);
-        vm.prank(owner);
+        vm.prank(house);
         game.withdrawHouseTake(admin);
 
         assertEq(address(game).balance, contractBalBefore - houseTakeBefore);
         assertEq(admin.balance, recipientBalBefore + houseTakeBefore);
         assertEq(game.houseTake(), 0);
+    }
+
+    function test_withdrawHouseTake_revertConditions() public threePlayersEntered {
+        
+        vm.prank(owner);
+        game.endGame(alice, true);
+
+        // not house
+        vm.expectRevert(BombGame.BombGame__OnlyHouse.selector);
+        vm.prank(owner);
+        game.withdrawHouseTake(admin);
+
+        // no house take
+        vm.prank(house);
+        game.withdrawHouseTake(admin);
+        assertEq(game.houseTake(), 0);
+
+        vm.expectRevert(BombGame.BombGame__NoHouseTake.selector);
+        vm.prank(house);
+        game.withdrawHouseTake(admin);
+
     }
 
 }
