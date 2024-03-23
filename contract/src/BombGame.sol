@@ -6,139 +6,103 @@ import {Ownable} from "openzeppelin-contracts/contracts/access/Ownable.sol";
 import {IERC20} from "openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 
 contract BombGame is Ownable {
-    error SendMoreEthOrTokens();
-    error InvalidToken();
-    //use this if play is entering with eth
-    address constant ETH_PLACEHOLDER_ADDR = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
 
-    uint256 public ownerCut; // bps 10_000 max
-    uint256 public minWager = 0.0001 ether;
+    error BombGame__InvalidEntryFee(uint256 entryFee);
+    error BombGame__AlreadyPlaying();
+    error BombGame__PlayerNotActive();
+    error BombGame__NoWinnings();
+    error BombGame__AlreadyClaimed();
+    error BombGame__InsufficientBalance();
+    error BombGame__TransferFailed();
 
-    uint256 public totalPendingEthRewards;
-    uint256 public pendingEthRewardsForAdmin;
+    uint256 public constant ENTRY_FEE = 0.00069 ether;
     
-    mapping(address=>bool) public admins; // admin address
-    mapping(address=>bool) public approvedToken; // "whitelisted" tokens
-    mapping(address=>uint256) public minTokenWager; // min wager for tokens
-    mapping(address=>bool) public playingForEthPot; // user playing for eth
-    // user addr -> token addr -> bool
-    mapping(address=>mapping(address=>bool)) public playingForTokenPot; //user playing for tokens
-    mapping(address=>uint256) public userPendingTokenRewards; // pending token rewards per user
-    mapping(address=>uint256) public userPendingEthRewards; // pending eth rewards per user 
-    mapping(address=>uint256) public totalPendingTokenRewards; // total pending token rewards
-    mapping(address=>uint256) public pendingTokenRewardsForAdmin; // pending token rewards for admin
+    /**
+     * @notice accounting expressed in basis points - i.e. upon winning:
+     * winner take 69.420% of prize pool
+     * house takes 10% or prize pool
+     * 20.58% remains in prize pool
+     */
+    uint256 public constant WIN_PERCENTAGE = 6942; 
+    uint256 public constant HOUSE_CUT = 1000;
+    // uint256 public constant REMAINING_PERCENTAGE = 2058; // don't need?
+    uint256 public constant PRECISION = 10000; // all percentages expressed in basis points
 
-    constructor(uint256 _ownersCut) Ownable(msg.sender){
-        require(_ownersCut <= 10_000, "Invalid cut");
-        ownerCut = _ownersCut;
+    uint256 public prizePool;
+    uint256 public houseTake;
+
+    /**
+     * @notice incremented each time a player wins
+     */
+    uint256 public gameNonce; 
+
+    mapping(address => bool) public isPlaying;
+    mapping(uint256 => mapping(address => uint256)) public playerWinnings; // game nonce => player => amount
+    mapping(uint256 => bool) public hasClaimed; 
+
+    event Entered(address indexed player);
+    event Lose(address indexed player);
+    event Win(address indexed winner, uint256 indexed amount, uint256 indexed nonce);
+    event WinningsClaimed(address indexed winner, uint256 indexed amount, uint256 indexed nonce);
+    event PoolFunded(uint256 amount);
+    event HouseTakeWithdrawn(address indexed recipient, uint256 amount);
+
+    constructor() Ownable(msg.sender) payable {
+        prizePool = msg.value;
     }
 
-    // recieve native tokens
-    receive() external payable {
-
+    /**
+     * @notice enters a new player
+     * @notice only one game at a time per address
+     */
+    function play() external payable {
+        if (msg.value != ENTRY_FEE) revert BombGame__InvalidEntryFee(ENTRY_FEE);
+        if (isPlaying[msg.sender]) revert BombGame__AlreadyPlaying();
+        isPlaying[msg.sender] = true;
+        prizePool += msg.value;
+        emit Entered(msg.sender);
     }
 
-    modifier onlyOwnerOrAdmin() {
-        require(msg.sender == owner() || admins[msg.sender]);
-        _;
-    }
-
-    // function that allows users to play the game
-    function foundTheBomb(uint256 _amount, address _token) external payable {
-        
-        // if they play with eth check msg.value and assign them to eth pot
-        if(_token == ETH_PLACEHOLDER_ADDR){
-            if(msg.value < minWager){
-                revert SendMoreEthOrTokens();
-            }
-
-            playingForEthPot[msg.sender] = true;
-            totalPendingEthRewards += msg.value;
-
-        } else {
-            // check minWager of token and assign user to token pot
-            if(!approvedToken[_token]){
-                revert InvalidToken();
-            }
-            if(_amount < minTokenWager[_token]){
-                revert SendMoreEthOrTokens();
-            }
-
-            playingForTokenPot[msg.sender][_token] = true; 
-            totalPendingTokenRewards[_token] += _amount;  
+    function endGame(address _player, bool _isWinner) external onlyOwner {
+        if (!isPlaying[_player]) revert BombGame__PlayerNotActive();
+        isPlaying[_player] = false;
+        if (!_isWinner) {
+            emit Lose(_player);
+            return;
+        } else { 
+            uint256 winningNonce = gameNonce;
+            ++gameNonce;
+            uint256 winnings = (prizePool * WIN_PERCENTAGE) / PRECISION;
+            uint256 houseCut = (prizePool * HOUSE_CUT) / PRECISION;
+            prizePool = prizePool - winnings - houseCut;
+            houseTake += houseCut;
+            playerWinnings[winningNonce][_player] = winnings;
+            emit Win(_player, winnings, winningNonce);
         }
     }
 
-    // function called to distribute rewards to users 
-    // "pull eth method"
-    function bombDefused(address _winner, address _token) external onlyOwnerOrAdmin{
-        // check if user if playing for eth pot
-        if(playingForEthPot[_winner]){
-            playingForEthPot[_winner] = false;
-
-            // credit eth to admin
-            uint256 adminFee = calculateFee(totalPendingEthRewards);
-            pendingEthRewardsForAdmin += adminFee;
-            totalPendingEthRewards -= adminFee;
-
-            // credit eth to user
-            uint256 ethWon = totalPendingEthRewards;
-            userPendingEthRewards[_winner] += ethWon;
-            totalPendingEthRewards -= ethWon;
-
-
-        } else {
-            playingForTokenPot[_winner][_token] = false;
-
-            address admin = owner();
-
-            // credit token to admin
-            uint256 adminTokenFee = calculateFee(totalPendingTokenRewards[_token]);
-            pendingTokenRewardsForAdmin[admin] += adminTokenFee;
-            totalPendingTokenRewards[_token] -= adminTokenFee;
-
-            // credit toke to user
-
-            uint256 tokensWon = totalPendingTokenRewards[_token]; 
-            userPendingTokenRewards[_winner] += tokensWon;
-            totalPendingTokenRewards[_token] -= tokensWon;
-
-        }
-
+    function claimWinnings(uint256 _gameNonce) external {
+        if (hasClaimed[_gameNonce]) revert BombGame__AlreadyClaimed();
+        uint256 winnings = playerWinnings[_gameNonce][msg.sender];
+        if (winnings == 0) revert BombGame__NoWinnings();
+        hasClaimed[_gameNonce] = true;
+        emit WinningsClaimed(msg.sender, winnings, _gameNonce);
+        if (address(this).balance < winnings) revert BombGame__InsufficientBalance();
+        (bool success, ) = msg.sender.call{value: winnings}("");
+        if (!success) revert BombGame__TransferFailed();
     }
 
-    function withdrawEthRewards() external {}
-
-    function witdrawEthRewards() external {}
-
-    function calculateFee(uint256 _amount) internal view returns (uint256) {
-        uint256 fee = (_amount * ownerCut) / 10000; 
-        return fee;
+    function fundPool() external payable {
+        prizePool += msg.value;
+        emit PoolFunded(msg.value);
     }
 
-
-    //////////////////////////////
-    /// Admin Setter Functions ///
-    //////////////////////////////
-
-    function setTokenApproved(address _token, bool _status) public onlyOwnerOrAdmin {
-        approvedToken[_token] = _status;
-    }
-
-    function setMinWagerToken(address _token, uint256 _amount) external onlyOwnerOrAdmin{
-        if(!approvedToken[_token]){
-            revert InvalidToken();
-        }
-
-        minTokenWager[_token] = _amount;
-    }
-
-    function setAdminStatus(address _address, bool _status) public onlyOwner {
-        admins[_address] = _status;
-    }
-
-    function changeMinWager(uint256 _amount) external onlyOwnerOrAdmin {
-        minWager = _amount;
+    function withdrawHouseTake(address _recipient) external onlyOwner {
+        uint256 amount = houseTake;
+        houseTake = 0;
+        emit HouseTakeWithdrawn(_recipient, amount);
+        (bool success, ) = _recipient.call{value: amount}("");
+        if (!success) revert BombGame__TransferFailed();
     }
 
 }
