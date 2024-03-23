@@ -1,0 +1,767 @@
+{
+  "abi": [
+    {
+      "type": "constructor",
+      "inputs": [
+        { "name": "_owner", "type": "address", "internalType": "address" },
+        { "name": "_house", "type": "address", "internalType": "address" }
+      ],
+      "stateMutability": "payable"
+    },
+    {
+      "type": "function",
+      "name": "ENTRY_FEE",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "HOUSE_CUT",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "PRECISION",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "WIN_PERCENTAGE",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "claimWinnings",
+      "inputs": [
+        { "name": "_gameNonce", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "endGame",
+      "inputs": [
+        { "name": "_player", "type": "address", "internalType": "address" },
+        { "name": "_isWinner", "type": "bool", "internalType": "bool" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "fundPool",
+      "inputs": [],
+      "outputs": [],
+      "stateMutability": "payable"
+    },
+    {
+      "type": "function",
+      "name": "gameNonce",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "hasClaimed",
+      "inputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "house",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "houseTake",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "isPlaying",
+      "inputs": [{ "name": "", "type": "address", "internalType": "address" }],
+      "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "owner",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "play",
+      "inputs": [],
+      "outputs": [],
+      "stateMutability": "payable"
+    },
+    {
+      "type": "function",
+      "name": "playerWinnings",
+      "inputs": [
+        { "name": "", "type": "uint256", "internalType": "uint256" },
+        { "name": "", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "prizePool",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "renounceOwnership",
+      "inputs": [],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "transferOwnership",
+      "inputs": [
+        { "name": "newOwner", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "withdrawHouseTake",
+      "inputs": [
+        { "name": "_recipient", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "event",
+      "name": "Entered",
+      "inputs": [
+        {
+          "name": "player",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "HouseTakeWithdrawn",
+      "inputs": [
+        {
+          "name": "recipient",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "Lose",
+      "inputs": [
+        {
+          "name": "player",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "OwnershipTransferred",
+      "inputs": [
+        {
+          "name": "previousOwner",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "newOwner",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "PoolFunded",
+      "inputs": [
+        {
+          "name": "amount",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "Win",
+      "inputs": [
+        {
+          "name": "winner",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "nonce",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "WinningsClaimed",
+      "inputs": [
+        {
+          "name": "winner",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "nonce",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        }
+      ],
+      "anonymous": false
+    },
+    { "type": "error", "name": "BombGame__AlreadyClaimed", "inputs": [] },
+    { "type": "error", "name": "BombGame__AlreadyPlaying", "inputs": [] },
+    { "type": "error", "name": "BombGame__InsufficientBalance", "inputs": [] },
+    {
+      "type": "error",
+      "name": "BombGame__InvalidEntryFee",
+      "inputs": [
+        { "name": "entryFee", "type": "uint256", "internalType": "uint256" }
+      ]
+    },
+    { "type": "error", "name": "BombGame__NoHouseTake", "inputs": [] },
+    { "type": "error", "name": "BombGame__NoWinnings", "inputs": [] },
+    { "type": "error", "name": "BombGame__OnlyHouse", "inputs": [] },
+    { "type": "error", "name": "BombGame__PlayerNotActive", "inputs": [] },
+    { "type": "error", "name": "BombGame__TransferFailed", "inputs": [] },
+    {
+      "type": "error",
+      "name": "OwnableInvalidOwner",
+      "inputs": [
+        { "name": "owner", "type": "address", "internalType": "address" }
+      ]
+    },
+    {
+      "type": "error",
+      "name": "OwnableUnauthorizedAccount",
+      "inputs": [
+        { "name": "account", "type": "address", "internalType": "address" }
+      ]
+    }
+  ],
+  "bytecode": {
+    "object": "0x60a0604052604051610bb0380380610bb0833981016040819052610022916100dd565b816001600160a01b03811661005157604051631e4fbdf760e01b81526000600482015260240160405180910390fd5b61005a81610071565b506001600160a01b03166080525034600155610110565b600080546001600160a01b038381166001600160a01b0319831681178455604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a35050565b80516001600160a01b03811681146100d857600080fd5b919050565b600080604083850312156100f057600080fd5b6100f9836100c1565b9150610107602084016100c1565b90509250929050565b608051610a7e6101326000396000818161035e015261038b0152610a7e6000f3fe6080604052600436106101145760003560e01c806393e84cd9116100a0578063ce51650711610064578063ce516507146102cb578063d945d53f146102fb578063f2fde38b14610311578063f6d361cc14610331578063ff9b3acf1461034c57600080fd5b806393e84cd91461024157806393ffb100146102495780639661578e1461025f578063aaf5eb6814610275578063b76656131461028b57600080fd5b8063677bd9ff116100e7578063677bd9ff146101bc57806370f37d27146101dc578063715018a6146101e4578063719ce73e146101f95780638da5cb5b1461020f57600080fd5b806316e8f379146101195780633e3c2c821461013b5780634ae332751461015b5780636725372b14610184575b600080fd5b34801561012557600080fd5b50610139610134366004610911565b610380565b005b34801561014757600080fd5b50610139610156366004610933565b6104ad565b34801561016757600080fd5b50610171611b1e81565b6040519081526020015b60405180910390f35b34801561019057600080fd5b5061017161019f36600461096f565b600560209081526000928352604080842090915290825290205481565b3480156101c857600080fd5b506101396101d736600461099b565b610630565b610139610715565b3480156101f057600080fd5b50610139610761565b34801561020557600080fd5b5061017160015481565b34801561021b57600080fd5b506000546001600160a01b03165b6040516001600160a01b03909116815260200161017b565b610139610775565b34801561025557600080fd5b5061017160035481565b34801561026b57600080fd5b5061017160025481565b34801561028157600080fd5b5061017161271081565b34801561029757600080fd5b506102bb6102a6366004610911565b60046020526000908152604090205460ff1681565b604051901515815260200161017b565b3480156102d757600080fd5b506102bb6102e636600461099b565b60066020526000908152604090205460ff1681565b34801561030757600080fd5b506101716103e881565b34801561031d57600080fd5b5061013961032c366004610911565b61083a565b34801561033d57600080fd5b506101716602738d24e5200081565b34801561035857600080fd5b506102297f000000000000000000000000000000000000000000000000000000000000000081565b336001600160a01b037f000000000000000000000000000000000000000000000000000000000000000016146103c957604051633c38a23360e01b815260040160405180910390fd5b6002546000036103ec57604051639df74d4560e01b815260040160405180910390fd5b6002805460009091556040518181526001600160a01b038316907f3ed40af48f4150069c4dc17e3f0ab5cb83aed3fc5f797123d916aabad7ec350f9060200160405180910390a26000826001600160a01b0316826040515b60006040518083038185875af1925050503d8060008114610481576040519150601f19603f3d011682016040523d82523d6000602084013e610486565b606091505b50509050806104a8576040516333b08e1d60e21b815260040160405180910390fd5b505050565b6104b5610878565b6001600160a01b03821660009081526004602052604090205460ff166104ee57604051631b0207a960e21b815260040160405180910390fd5b6001600160a01b0382166000908152600460205260409020805460ff191690558061054b576040516001600160a01b038316907f7a75b74c46870f067801baf9792b808a187f20ff480472a2169f637ba69e5c6990600090a25050565b6003805490600061055b836109ca565b909155506001546000906127109061057690611b1e906109e3565b6105809190610a00565b905060006127106103e860015461059791906109e3565b6105a19190610a00565b905080826001546105b29190610a22565b6105bc9190610a22565b60018190555080600260008282546105d49190610a35565b909155505060008381526005602090815260408083206001600160a01b03891680855292528083208590555185928592917f1547adaaf63fc61e99e29577a820d1c7626e8de63d1cb5830d0edbf3951aeb5c9190a45050505050565b60008181526006602052604090205460ff161561066057604051631c4a530760e31b815260040160405180910390fd5b60008181526005602090815260408083203384529091528120549081900361069b57604051632216cd8d60e21b815260040160405180910390fd5b600082815260066020526040808220805460ff19166001179055518391839133917f7472e24de4628e34b41a2aa1688ed4b46a9145b2de1cf93d74902473ccc1740d91a48047101561070057604051630de4192560e01b815260040160405180910390fd5b6000336001600160a01b031682604051610444565b34600160008282546107279190610a35565b90915550506040513481527fd20389ec208fde395624b8221fa1cae9211e46a6ba77134c8e0b1af8c96033989060200160405180910390a1565b610769610878565b61077360006108a5565b565b6602738d24e5200034146107aa576040516306758d8d60e51b81526602738d24e5200060048201526024015b60405180910390fd5b3360009081526004602052604090205460ff16156107db57604051630babb8e960e11b815260040160405180910390fd5b336000908152600460205260408120805460ff191660019081179091558054349290610808908490610a35565b909155505060405133907f9d8f2d54c1a8ffb26973551e72794da9bd5b8529f24c494a6f1590d35d5e8ecf90600090a2565b610842610878565b6001600160a01b03811661086c57604051631e4fbdf760e01b8152600060048201526024016107a1565b610875816108a5565b50565b6000546001600160a01b031633146107735760405163118cdaa760e01b81523360048201526024016107a1565b600080546001600160a01b038381166001600160a01b0319831681178455604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a35050565b80356001600160a01b038116811461090c57600080fd5b919050565b60006020828403121561092357600080fd5b61092c826108f5565b9392505050565b6000806040838503121561094657600080fd5b61094f836108f5565b91506020830135801515811461096457600080fd5b809150509250929050565b6000806040838503121561098257600080fd5b82359150610992602084016108f5565b90509250929050565b6000602082840312156109ad57600080fd5b5035919050565b634e487b7160e01b600052601160045260246000fd5b6000600182016109dc576109dc6109b4565b5060010190565b80820281158282048414176109fa576109fa6109b4565b92915050565b600082610a1d57634e487b7160e01b600052601260045260246000fd5b500490565b818103818111156109fa576109fa6109b4565b808201808211156109fa576109fa6109b456fea2646970667358221220461e2b024ab8ea0128c71cc3dd4c452908b81770d545e695748047676b97eac964736f6c63430008170033",
+    "sourceMap": "141:4094:27:-:0;;;1810:133;;;;;;;;;;;;;;;;;;:::i;:::-;1862:6;-1:-1:-1;;;;;1311:26:24;;1307:97;;1361:31;;-1:-1:-1;;;1361:31:24;;1389:1;1361:31;;;640:51:29;613:18;;1361:31:24;;;;;;;1307:97;1414:32;1433:12;1414:18;:32::i;:::-;-1:-1:-1;;;;;;1889:14:27::1;;::::0;-1:-1:-1;1926:9:27::1;1914;:21:::0;141:4094;;3006:191:24;3080:16;3099:6;;-1:-1:-1;;;;;3116:17:24;;;-1:-1:-1;;;;;;3116:17:24;;;;;;3149:40;;3099:6;;;;;;;3149:40;;3080:16;3149:40;3069:128;3006:191;:::o;14:177:29:-;93:13;;-1:-1:-1;;;;;135:31:29;;125:42;;115:70;;181:1;178;171:12;115:70;14:177;;;:::o;196:293::-;275:6;283;336:2;324:9;315:7;311:23;307:32;304:52;;;352:1;349;342:12;304:52;375:40;405:9;375:40;:::i;:::-;365:50;;434:49;479:2;468:9;464:18;434:49;:::i;:::-;424:59;;196:293;;;;;:::o;494:203::-;141:4094:27;;;;;;;;;;;;;;;;;",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x6080604052600436106101145760003560e01c806393e84cd9116100a0578063ce51650711610064578063ce516507146102cb578063d945d53f146102fb578063f2fde38b14610311578063f6d361cc14610331578063ff9b3acf1461034c57600080fd5b806393e84cd91461024157806393ffb100146102495780639661578e1461025f578063aaf5eb6814610275578063b76656131461028b57600080fd5b8063677bd9ff116100e7578063677bd9ff146101bc57806370f37d27146101dc578063715018a6146101e4578063719ce73e146101f95780638da5cb5b1461020f57600080fd5b806316e8f379146101195780633e3c2c821461013b5780634ae332751461015b5780636725372b14610184575b600080fd5b34801561012557600080fd5b50610139610134366004610911565b610380565b005b34801561014757600080fd5b50610139610156366004610933565b6104ad565b34801561016757600080fd5b50610171611b1e81565b6040519081526020015b60405180910390f35b34801561019057600080fd5b5061017161019f36600461096f565b600560209081526000928352604080842090915290825290205481565b3480156101c857600080fd5b506101396101d736600461099b565b610630565b610139610715565b3480156101f057600080fd5b50610139610761565b34801561020557600080fd5b5061017160015481565b34801561021b57600080fd5b506000546001600160a01b03165b6040516001600160a01b03909116815260200161017b565b610139610775565b34801561025557600080fd5b5061017160035481565b34801561026b57600080fd5b5061017160025481565b34801561028157600080fd5b5061017161271081565b34801561029757600080fd5b506102bb6102a6366004610911565b60046020526000908152604090205460ff1681565b604051901515815260200161017b565b3480156102d757600080fd5b506102bb6102e636600461099b565b60066020526000908152604090205460ff1681565b34801561030757600080fd5b506101716103e881565b34801561031d57600080fd5b5061013961032c366004610911565b61083a565b34801561033d57600080fd5b506101716602738d24e5200081565b34801561035857600080fd5b506102297f000000000000000000000000000000000000000000000000000000000000000081565b336001600160a01b037f000000000000000000000000000000000000000000000000000000000000000016146103c957604051633c38a23360e01b815260040160405180910390fd5b6002546000036103ec57604051639df74d4560e01b815260040160405180910390fd5b6002805460009091556040518181526001600160a01b038316907f3ed40af48f4150069c4dc17e3f0ab5cb83aed3fc5f797123d916aabad7ec350f9060200160405180910390a26000826001600160a01b0316826040515b60006040518083038185875af1925050503d8060008114610481576040519150601f19603f3d011682016040523d82523d6000602084013e610486565b606091505b50509050806104a8576040516333b08e1d60e21b815260040160405180910390fd5b505050565b6104b5610878565b6001600160a01b03821660009081526004602052604090205460ff166104ee57604051631b0207a960e21b815260040160405180910390fd5b6001600160a01b0382166000908152600460205260409020805460ff191690558061054b576040516001600160a01b038316907f7a75b74c46870f067801baf9792b808a187f20ff480472a2169f637ba69e5c6990600090a25050565b6003805490600061055b836109ca565b909155506001546000906127109061057690611b1e906109e3565b6105809190610a00565b905060006127106103e860015461059791906109e3565b6105a19190610a00565b905080826001546105b29190610a22565b6105bc9190610a22565b60018190555080600260008282546105d49190610a35565b909155505060008381526005602090815260408083206001600160a01b03891680855292528083208590555185928592917f1547adaaf63fc61e99e29577a820d1c7626e8de63d1cb5830d0edbf3951aeb5c9190a45050505050565b60008181526006602052604090205460ff161561066057604051631c4a530760e31b815260040160405180910390fd5b60008181526005602090815260408083203384529091528120549081900361069b57604051632216cd8d60e21b815260040160405180910390fd5b600082815260066020526040808220805460ff19166001179055518391839133917f7472e24de4628e34b41a2aa1688ed4b46a9145b2de1cf93d74902473ccc1740d91a48047101561070057604051630de4192560e01b815260040160405180910390fd5b6000336001600160a01b031682604051610444565b34600160008282546107279190610a35565b90915550506040513481527fd20389ec208fde395624b8221fa1cae9211e46a6ba77134c8e0b1af8c96033989060200160405180910390a1565b610769610878565b61077360006108a5565b565b6602738d24e5200034146107aa576040516306758d8d60e51b81526602738d24e5200060048201526024015b60405180910390fd5b3360009081526004602052604090205460ff16156107db57604051630babb8e960e11b815260040160405180910390fd5b336000908152600460205260408120805460ff191660019081179091558054349290610808908490610a35565b909155505060405133907f9d8f2d54c1a8ffb26973551e72794da9bd5b8529f24c494a6f1590d35d5e8ecf90600090a2565b610842610878565b6001600160a01b03811661086c57604051631e4fbdf760e01b8152600060048201526024016107a1565b610875816108a5565b50565b6000546001600160a01b031633146107735760405163118cdaa760e01b81523360048201526024016107a1565b600080546001600160a01b038381166001600160a01b0319831681178455604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a35050565b80356001600160a01b038116811461090c57600080fd5b919050565b60006020828403121561092357600080fd5b61092c826108f5565b9392505050565b6000806040838503121561094657600080fd5b61094f836108f5565b91506020830135801515811461096457600080fd5b809150509250929050565b6000806040838503121561098257600080fd5b82359150610992602084016108f5565b90509250929050565b6000602082840312156109ad57600080fd5b5035919050565b634e487b7160e01b600052601160045260246000fd5b6000600182016109dc576109dc6109b4565b5060010190565b80820281158282048414176109fa576109fa6109b4565b92915050565b600082610a1d57634e487b7160e01b600052601260045260246000fd5b500490565b818103818111156109fa576109fa6109b4565b808201808211156109fa576109fa6109b456fea2646970667358221220461e2b024ab8ea0128c71cc3dd4c452908b81770d545e695748047676b97eac964736f6c63430008170033",
+    "sourceMap": "141:4094:27:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;3804:426;;;;;;;;;;-1:-1:-1;3804:426:27;;;;;:::i;:::-;;:::i;:::-;;2366:724;;;;;;;;;;-1:-1:-1;2366:724:27;;;;;:::i;:::-;;:::i;814:45::-;;;;;;;;;;;;855:4;814:45;;;;;881:25:29;;;869:2;854:18;814:45:27;;;;;;;;1262:69;;;;;;;;;;-1:-1:-1;1262:69:27;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;3098:575;;;;;;;;;;-1:-1:-1;3098:575:27;;;;;:::i;:::-;;:::i;3681:115::-;;;:::i;2368:103:24:-;;;;;;;;;;;;;:::i;1009:24:27:-;;;;;;;;;;;;;;;;1693:87:24;;;;;;;;;;-1:-1:-1;1739:7:24;1766:6;-1:-1:-1;;;;;1766:6:24;1693:87;;;-1:-1:-1;;;;;1525:32:29;;;1507:51;;1495:2;1480:18;1693:87:24;1361:203:29;2057:301:27;;;:::i;1180:24::-;;;;;;;;;;;;;;;;1040;;;;;;;;;;;;;;;;914:41;;;;;;;;;;;;950:5;914:41;;1214;;;;;;;;;;-1:-1:-1;1214:41:27;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;1734:14:29;;1727:22;1709:41;;1697:2;1682:18;1214:41:27;1569:187:29;1372:42:27;;;;;;;;;;-1:-1:-1;1372:42:27;;;;;:::i;:::-;;;;;;;;;;;;;;;;867:40;;;;;;;;;;;;903:4;867:40;;2626:220:24;;;;;;;;;;-1:-1:-1;2626:220:24;;;;;:::i;:::-;;:::i;543:49:27:-;;;;;;;;;;;;579:13;543:49;;1071:30;;;;;;;;;;;;;;;3804:426;3875:10;-1:-1:-1;;;;;3889:5:27;3875:19;;3871:53;;3903:21;;-1:-1:-1;;;3903:21:27;;;;;;;;;;;3871:53;3939:9;;3952:1;3939:14;3935:50;;3962:23;;-1:-1:-1;;;3962:23:27;;;;;;;;;;;3935:50;4013:9;;;3996:14;4033:13;;;4062:38;;881:25:29;;;-1:-1:-1;;;;;4062:38:27;;;;;869:2:29;854:18;4062:38:27;;;;;;;4112:12;4130:10;-1:-1:-1;;;;;4130:15:27;4153:6;4130:34;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;4111:53;;;4180:7;4175:47;;4196:26;;-1:-1:-1;;;4196:26:27;;;;;;;;;;;4175:47;3860:370;;3804:426;:::o;2366:724::-;1579:13:24;:11;:13::i;:::-;-1:-1:-1;;;;;2451:18:27;::::1;;::::0;;;:9:::1;:18;::::0;;;;;::::1;;2446:59;;2478:27;;-1:-1:-1::0;;;2478:27:27::1;;;;;;;;;;;2446:59;-1:-1:-1::0;;;;;2516:18:27;::::1;2537:5;2516:18:::0;;;:9:::1;:18;::::0;;;;:26;;-1:-1:-1;;2516:26:27::1;::::0;;2558:9;2553:530:::1;;2589:13;::::0;-1:-1:-1;;;;;2589:13:27;::::1;::::0;::::1;::::0;;;::::1;2366:724:::0;;:::o;2553:530::-:1;2680:9;::::0;;;2657:20:::1;2704:11;2680:9:::0;2704:11:::1;:::i;:::-;::::0;;;-1:-1:-1;2750:9:27::1;::::0;2730:16:::1;::::0;950:5:::1;::::0;2750:26:::1;::::0;855:4:::1;::::0;2750:26:::1;:::i;:::-;2749:40;;;;:::i;:::-;2730:59;;2804:16;950:5;903:4;2824:9;;:21;;;;:::i;:::-;2823:35;;;;:::i;:::-;2804:54;;2908:8;2897;2885:9;;:20;;;;:::i;:::-;:31;;;;:::i;:::-;2873:9;:43;;;;2944:8;2931:9;;:21;;;;;;;:::i;:::-;::::0;;;-1:-1:-1;;2967:28:27::1;::::0;;;:14:::1;:28;::::0;;;;;;;-1:-1:-1;;;;;2967:37:27;::::1;::::0;;;;;;;;:48;;;3035:36;2982:12;;3007:8;;2967:37;3035:36:::1;::::0;2967:28;3035:36:::1;2641:442;;;2366:724:::0;;:::o;3098:575::-;3165:22;;;;:10;:22;;;;;;;;3161:61;;;3196:26;;-1:-1:-1;;;3196:26:27;;;;;;;;;;;3161:61;3233:16;3252:26;;;:14;:26;;;;;;;;3279:10;3252:38;;;;;;;;;3305:13;;;3301:48;;3327:22;;-1:-1:-1;;;3327:22:27;;;;;;;;;;;3301:48;3360:22;;;;:10;:22;;;;;;:29;;-1:-1:-1;;3360:29:27;3385:4;3360:29;;;3405:49;3371:10;;3433:8;;3421:10;;3405:49;;;3493:8;3469:21;:32;3465:76;;;3510:31;;-1:-1:-1;;;3510:31:27;;;;;;;;;;;3465:76;3553:12;3571:10;-1:-1:-1;;;;;3571:15:27;3594:8;3571:36;;;1761:205:29;3681:115:27;3742:9;3729;;:22;;;;;;;:::i;:::-;;;;-1:-1:-1;;3767:21:27;;3778:9;881:25:29;;3767:21:27;;869:2:29;854:18;3767:21:27;;;;;;;3681:115::o;2368:103:24:-;1579:13;:11;:13::i;:::-;2433:30:::1;2460:1;2433:18;:30::i;:::-;2368:103::o:0;2057:301:27:-;579:13;2105:9;:22;2101:71;;2136:36;;-1:-1:-1;;;2136:36:27;;579:13;2136:36;;;881:25:29;854:18;;2136:36:27;;;;;;;;2101:71;2197:10;2187:21;;;;:9;:21;;;;;;;;2183:60;;;2217:26;;-1:-1:-1;;;2217:26:27;;;;;;;;;;;2183:60;2264:10;2254:21;;;;:9;:21;;;;;:28;;-1:-1:-1;;2254:28:27;2278:4;2254:28;;;;;;2293:22;;2306:9;;2254:21;2293:22;;2306:9;;2293:22;:::i;:::-;;;;-1:-1:-1;;2331:19:27;;2339:10;;2331:19;;;;;2057:301::o;2626:220:24:-;1579:13;:11;:13::i;:::-;-1:-1:-1;;;;;2711:22:24;::::1;2707:93;;2757:31;::::0;-1:-1:-1;;;2757:31:24;;2785:1:::1;2757:31;::::0;::::1;1507:51:29::0;1480:18;;2757:31:24::1;1361:203:29::0;2707:93:24::1;2810:28;2829:8;2810:18;:28::i;:::-;2626:220:::0;:::o;1858:166::-;1739:7;1766:6;-1:-1:-1;;;;;1766:6:24;752:10:25;1918:23:24;1914:103;;1965:40;;-1:-1:-1;;;1965:40:24;;752:10:25;1965:40:24;;;1507:51:29;1480:18;;1965:40:24;1361:203:29;3006:191:24;3080:16;3099:6;;-1:-1:-1;;;;;3116:17:24;;;-1:-1:-1;;;;;;3116:17:24;;;;;;3149:40;;3099:6;;;;;;;3149:40;;3080:16;3149:40;3069:128;3006:191;:::o;14:173:29:-;82:20;;-1:-1:-1;;;;;131:31:29;;121:42;;111:70;;177:1;174;167:12;111:70;14:173;;;:::o;192:186::-;251:6;304:2;292:9;283:7;279:23;275:32;272:52;;;320:1;317;310:12;272:52;343:29;362:9;343:29;:::i;:::-;333:39;192:186;-1:-1:-1;;;192:186:29:o;383:347::-;448:6;456;509:2;497:9;488:7;484:23;480:32;477:52;;;525:1;522;515:12;477:52;548:29;567:9;548:29;:::i;:::-;538:39;;627:2;616:9;612:18;599:32;674:5;667:13;660:21;653:5;650:32;640:60;;696:1;693;686:12;640:60;719:5;709:15;;;383:347;;;;;:::o;917:254::-;985:6;993;1046:2;1034:9;1025:7;1021:23;1017:32;1014:52;;;1062:1;1059;1052:12;1014:52;1098:9;1085:23;1075:33;;1127:38;1161:2;1150:9;1146:18;1127:38;:::i;:::-;1117:48;;917:254;;;;;:::o;1176:180::-;1235:6;1288:2;1276:9;1267:7;1263:23;1259:32;1256:52;;;1304:1;1301;1294:12;1256:52;-1:-1:-1;1327:23:29;;1176:180;-1:-1:-1;1176:180:29:o;1971:127::-;2032:10;2027:3;2023:20;2020:1;2013:31;2063:4;2060:1;2053:15;2087:4;2084:1;2077:15;2103:135;2142:3;2163:17;;;2160:43;;2183:18;;:::i;:::-;-1:-1:-1;2230:1:29;2219:13;;2103:135::o;2243:168::-;2316:9;;;2347;;2364:15;;;2358:22;;2344:37;2334:71;;2385:18;;:::i;:::-;2243:168;;;;:::o;2416:217::-;2456:1;2482;2472:132;;2526:10;2521:3;2517:20;2514:1;2507:31;2561:4;2558:1;2551:15;2589:4;2586:1;2579:15;2472:132;-1:-1:-1;2618:9:29;;2416:217::o;2638:128::-;2705:9;;;2726:11;;;2723:37;;;2740:18;;:::i;2771:125::-;2836:9;;;2857:10;;;2854:36;;;2870:18;;:::i",
+    "linkReferences": {},
+    "immutableReferences": {
+      "46896": [
+        { "start": 862, "length": 32 },
+        { "start": 907, "length": 32 }
+      ]
+    }
+  },
+  "methodIdentifiers": {
+    "ENTRY_FEE()": "f6d361cc",
+    "HOUSE_CUT()": "d945d53f",
+    "PRECISION()": "aaf5eb68",
+    "WIN_PERCENTAGE()": "4ae33275",
+    "claimWinnings(uint256)": "677bd9ff",
+    "endGame(address,bool)": "3e3c2c82",
+    "fundPool()": "70f37d27",
+    "gameNonce()": "93ffb100",
+    "hasClaimed(uint256)": "ce516507",
+    "house()": "ff9b3acf",
+    "houseTake()": "9661578e",
+    "isPlaying(address)": "b7665613",
+    "owner()": "8da5cb5b",
+    "play()": "93e84cd9",
+    "playerWinnings(uint256,address)": "6725372b",
+    "prizePool()": "719ce73e",
+    "renounceOwnership()": "715018a6",
+    "transferOwnership(address)": "f2fde38b",
+    "withdrawHouseTake(address)": "16e8f379"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.23+commit.f704f362\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_house\",\"type\":\"address\"}],\"stateMutability\":\"payable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"BombGame__AlreadyClaimed\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"BombGame__AlreadyPlaying\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"BombGame__InsufficientBalance\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"entryFee\",\"type\":\"uint256\"}],\"name\":\"BombGame__InvalidEntryFee\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"BombGame__NoHouseTake\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"BombGame__NoWinnings\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"BombGame__OnlyHouse\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"BombGame__PlayerNotActive\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"BombGame__TransferFailed\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"OwnableInvalidOwner\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"OwnableUnauthorizedAccount\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"player\",\"type\":\"address\"}],\"name\":\"Entered\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"HouseTakeWithdrawn\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"player\",\"type\":\"address\"}],\"name\":\"Lose\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"PoolFunded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"winner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"nonce\",\"type\":\"uint256\"}],\"name\":\"Win\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"winner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"nonce\",\"type\":\"uint256\"}],\"name\":\"WinningsClaimed\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"ENTRY_FEE\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"HOUSE_CUT\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"PRECISION\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"WIN_PERCENTAGE\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_gameNonce\",\"type\":\"uint256\"}],\"name\":\"claimWinnings\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_player\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"_isWinner\",\"type\":\"bool\"}],\"name\":\"endGame\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"fundPool\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"gameNonce\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"hasClaimed\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"house\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"houseTake\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"isPlaying\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"play\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"playerWinnings\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"prizePool\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_recipient\",\"type\":\"address\"}],\"name\":\"withdrawHouseTake\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"errors\":{\"OwnableInvalidOwner(address)\":[{\"details\":\"The owner is not a valid owner account. (eg. `address(0)`)\"}],\"OwnableUnauthorizedAccount(address)\":[{\"details\":\"The caller account is not authorized to perform an operation.\"}]},\"kind\":\"dev\",\"methods\":{\"owner()\":{\"details\":\"Returns the address of the current owner.\"},\"renounceOwnership()\":{\"details\":\"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner.\"},\"transferOwnership(address)\":{\"details\":\"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.\"}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"WIN_PERCENTAGE()\":{\"notice\":\"accounting expressed in basis points - i.e. upon winning: winner take 69.420% of prize pool house takes 10% or prize pool 20.58% remains in prize pool\"},\"gameNonce()\":{\"notice\":\"incremented each time a player wins\"},\"play()\":{\"notice\":\"enters a new playeronly one game at a time per address\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/BombGame.sol\":\"BombGame\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/\",\":chainlink/=lib/chainlink/contracts/\",\":ds-test/=lib/chainlink/contracts/foundry-lib/forge-std/lib/ds-test/src/\",\":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/\",\":forge-std/=lib/forge-std/src/\",\":foundry-chainlink-toolkit/=lib/foundry-chainlink-toolkit/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\"]},\"sources\":{\"lib/openzeppelin-contracts/contracts/access/Ownable.sol\":{\"keccak256\":\"0xe889e9f6b8469155c967f403ad7508eaa66af8cad1cb9a003536a8e4f281d348\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://e6e32c81c8d84199eda0de40d33bb77c7acbb482e3f545d5cfba8195af0a88e0\",\"dweb:/ipfs/Qmaf1WAinzjYWGNxRzCTmn2QABFWS912HwC8eiD7cyTgis\"]},\"lib/openzeppelin-contracts/contracts/utils/Context.sol\":{\"keccak256\":\"0x3dcd533a3f709bda89bb8e649eb97aed96578e606f3796609544b1dcff975a0b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://83fa9b15077fd2f33f6c175d694e2f7ae9c9a289c7feaca40aa7d6feb8d87c26\",\"dweb:/ipfs/QmQLfKCJ7mjiEeCGN1sHgWT8wjAMbAmBqcBVoQQyUZa5ws\"]},\"src/BombGame.sol\":{\"keccak256\":\"0xe32650ca0b8d0cbbc1b1b62689bb7077ef27f9d51b4a8437819e9d65bbea5a5f\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://8ef6c104d0f5eae3974af37eba72da651729a60d56d0f22faca433f9c7638097\",\"dweb:/ipfs/QmcaaYtXTVswT3ysBoJydSk3vUNFQafc4kHgtXnpCuhdnE\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": { "version": "0.8.23+commit.f704f362" },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            { "internalType": "address", "name": "_owner", "type": "address" },
+            { "internalType": "address", "name": "_house", "type": "address" }
+          ],
+          "stateMutability": "payable",
+          "type": "constructor"
+        },
+        { "inputs": [], "type": "error", "name": "BombGame__AlreadyClaimed" },
+        { "inputs": [], "type": "error", "name": "BombGame__AlreadyPlaying" },
+        {
+          "inputs": [],
+          "type": "error",
+          "name": "BombGame__InsufficientBalance"
+        },
+        {
+          "inputs": [
+            { "internalType": "uint256", "name": "entryFee", "type": "uint256" }
+          ],
+          "type": "error",
+          "name": "BombGame__InvalidEntryFee"
+        },
+        { "inputs": [], "type": "error", "name": "BombGame__NoHouseTake" },
+        { "inputs": [], "type": "error", "name": "BombGame__NoWinnings" },
+        { "inputs": [], "type": "error", "name": "BombGame__OnlyHouse" },
+        { "inputs": [], "type": "error", "name": "BombGame__PlayerNotActive" },
+        { "inputs": [], "type": "error", "name": "BombGame__TransferFailed" },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "owner", "type": "address" }
+          ],
+          "type": "error",
+          "name": "OwnableInvalidOwner"
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "account", "type": "address" }
+          ],
+          "type": "error",
+          "name": "OwnableUnauthorizedAccount"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "player",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "Entered",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "recipient",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "HouseTakeWithdrawn",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "player",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "Lose",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "previousOwner",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "internalType": "address",
+              "name": "newOwner",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "OwnershipTransferred",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "PoolFunded",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "winner",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "internalType": "uint256",
+              "name": "nonce",
+              "type": "uint256",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "Win",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "winner",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "internalType": "uint256",
+              "name": "nonce",
+              "type": "uint256",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "WinningsClaimed",
+          "anonymous": false
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "ENTRY_FEE",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "HOUSE_CUT",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "PRECISION",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "WIN_PERCENTAGE",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "_gameNonce",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "claimWinnings"
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "_player", "type": "address" },
+            { "internalType": "bool", "name": "_isWinner", "type": "bool" }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "endGame"
+        },
+        {
+          "inputs": [],
+          "stateMutability": "payable",
+          "type": "function",
+          "name": "fundPool"
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "gameNonce",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ]
+        },
+        {
+          "inputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "hasClaimed",
+          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "house",
+          "outputs": [
+            { "internalType": "address", "name": "", "type": "address" }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "houseTake",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ]
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "", "type": "address" }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "isPlaying",
+          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "owner",
+          "outputs": [
+            { "internalType": "address", "name": "", "type": "address" }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "payable",
+          "type": "function",
+          "name": "play"
+        },
+        {
+          "inputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" },
+            { "internalType": "address", "name": "", "type": "address" }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "playerWinnings",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "prizePool",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "renounceOwnership"
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "newOwner", "type": "address" }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "transferOwnership"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_recipient",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "withdrawHouseTake"
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "owner()": { "details": "Returns the address of the current owner." },
+          "renounceOwnership()": {
+            "details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner."
+          },
+          "transferOwnership(address)": {
+            "details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "WIN_PERCENTAGE()": {
+            "notice": "accounting expressed in basis points - i.e. upon winning: winner take 69.420% of prize pool house takes 10% or prize pool 20.58% remains in prize pool"
+          },
+          "gameNonce()": { "notice": "incremented each time a player wins" },
+          "play()": {
+            "notice": "enters a new playeronly one game at a time per address"
+          }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+        "chainlink/=lib/chainlink/contracts/",
+        "ds-test/=lib/chainlink/contracts/foundry-lib/forge-std/lib/ds-test/src/",
+        "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+        "forge-std/=lib/forge-std/src/",
+        "foundry-chainlink-toolkit/=lib/foundry-chainlink-toolkit/src/",
+        "openzeppelin-contracts/=lib/openzeppelin-contracts/"
+      ],
+      "optimizer": { "enabled": true, "runs": 200 },
+      "metadata": { "bytecodeHash": "ipfs" },
+      "compilationTarget": { "src/BombGame.sol": "BombGame" },
+      "evmVersion": "paris",
+      "libraries": {}
+    },
+    "sources": {
+      "lib/openzeppelin-contracts/contracts/access/Ownable.sol": {
+        "keccak256": "0xe889e9f6b8469155c967f403ad7508eaa66af8cad1cb9a003536a8e4f281d348",
+        "urls": [
+          "bzz-raw://e6e32c81c8d84199eda0de40d33bb77c7acbb482e3f545d5cfba8195af0a88e0",
+          "dweb:/ipfs/Qmaf1WAinzjYWGNxRzCTmn2QABFWS912HwC8eiD7cyTgis"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts/contracts/utils/Context.sol": {
+        "keccak256": "0x3dcd533a3f709bda89bb8e649eb97aed96578e606f3796609544b1dcff975a0b",
+        "urls": [
+          "bzz-raw://83fa9b15077fd2f33f6c175d694e2f7ae9c9a289c7feaca40aa7d6feb8d87c26",
+          "dweb:/ipfs/QmQLfKCJ7mjiEeCGN1sHgWT8wjAMbAmBqcBVoQQyUZa5ws"
+        ],
+        "license": "MIT"
+      },
+      "src/BombGame.sol": {
+        "keccak256": "0xe32650ca0b8d0cbbc1b1b62689bb7077ef27f9d51b4a8437819e9d65bbea5a5f",
+        "urls": [
+          "bzz-raw://8ef6c104d0f5eae3974af37eba72da651729a60d56d0f22faca433f9c7638097",
+          "dweb:/ipfs/QmcaaYtXTVswT3ysBoJydSk3vUNFQafc4kHgtXnpCuhdnE"
+        ],
+        "license": "MIT"
+      }
+    },
+    "version": 1
+  },
+  "id": 27
+}

@@ -9,7 +9,7 @@ import { privateKeyToAccount } from 'viem/accounts';
 import { baseSepolia } from 'viem/chains';
 import { PinataFDK } from 'pinata-fdk';
 import { cutWire } from '../../game/logic';
-// import abi from './abi.json';
+import abi from '../abi.json';
 
 /**************************
  * Inital Setup
@@ -20,7 +20,8 @@ const fdk = new PinataFDK({
   pinata_gateway: '',
 });
 
-// const CONTRACT = (process.env.CONTRACT_ADDRESS as `0x${string}`) || '';
+const CONTRACT =
+  (process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`) || '';
 
 // const account = privateKeyToAccount(
 //   (process.env.NEXT_PUBLIC_PRIVATE_KEY as `0x${string}`) || ''
