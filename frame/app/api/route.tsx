@@ -150,11 +150,12 @@ app.transaction("/collect", async (c) => {
 });
 
 app.frame("/wire1", (c) => {
+  // First game screen
+  // server calculates 0.75 chance of success
   const { deriveState } = c;
   const state = deriveState((previousState) => {
     previousState.currentWire++;
   });
-  // if (state.currentWire === 1) {} else {}
   return c.res({
     action: "/wire2",
     image: (
