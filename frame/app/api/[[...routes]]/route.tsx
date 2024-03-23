@@ -107,12 +107,13 @@ app.frame('/', async (c) => {
     ),
     intents: [
       // test button
-      <Button>Play for 0.00069 ETH</Button>,
+      <Button>Play for 0.00069 SEP ETH</Button>,
+      // <Button>Play for 0.00069 ETH</Button>,
     ],
     // intents: [
     //   // transaction button triggers value send
     //   <Button.Transaction target="/collect">
-    //     Play for 0.00069 ETH
+    //     Play for 0.00069 SEP ETH
     //   </Button.Transaction>,
     // ],
     title: 'Defuse The Bomb!',
