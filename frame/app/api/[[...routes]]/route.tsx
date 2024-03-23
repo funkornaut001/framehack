@@ -167,12 +167,13 @@ app.frame('/wire2', (c) => {
     // check if previousState.step === 1
     // if not then direct to welcome screen
     return c.res({
-      browserLocation: '/',
+      action: '/',
       image: (
         <div style={{ color: 'white', display: 'flex', fontSize: 60 }}>
-          redirect to home
+          Looks like some wires got crossed...
         </div>
       ),
+      intents: [<Button>Go Home</Button>],
     });
   } else {
     const state = deriveState((previousState) => {
@@ -201,12 +202,13 @@ app.frame('/wire3', async (c) => {
     // check if previousState.step === 2
     // if not then direct to welcome screen
     return c.res({
-      browserLocation: '/',
+      action: '/',
       image: (
         <div style={{ color: 'white', display: 'flex', fontSize: 60 }}>
-          redirect to home
+          Looks like some wires got crossed...
         </div>
       ),
+      intents: [<Button>Go Home</Button>],
     });
   } else {
     const state = deriveState((previousState) => {
