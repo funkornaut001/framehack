@@ -6,34 +6,41 @@ import { devtools } from 'frog/dev';
 import { serveStatic } from 'frog/serve-static';
 import { createWalletClient, http, createPublicClient } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
-import { baseSepolia } from 'viem/chains';
+import { baseSepolia, anvil } from 'viem/chains';
 import { PinataFDK } from 'pinata-fdk';
 import { cutWire } from '../../game/logic';
-import abi from '../abi.json';
+import abi from '../../../../contract/out/BombGame.sol/BombGame.json';
+import { getConnectedAddressForUser } from '@/utils/fc';
+import { ethers } from 'ethers';
 
 /**************************
  * Inital Setup
  **************************/
 
 const fdk = new PinataFDK({
-  pinata_jwt: process.env.PINATA_JWT || '',
-  pinata_gateway: '',
+  pinata_jwt: process.env.PINATA_JWT as string,
+  pinata_gateway: process.env.GATEWAY_URL as string,
 });
 
 const CONTRACT =
-  (process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`) || '';
+  (process.env.CONTRACT_ADDRESS as `0x${string}`) || '';
 
-// const account = privateKeyToAccount(
-//   (process.env.NEXT_PUBLIC_PRIVATE_KEY as `0x${string}`) || ''
-// );
+const account = privateKeyToAccount(
+  (process.env.PRIVATE_KEY as `0x${string}`) || ''
+);
 
-// const publicClient = createPublicClient({
-//   chain: baseSepolia,
-//   transport: http(process.env.ALCHEMY_URL),
-// });
+const publicClient = createPublicClient({
+  chain: anvil,
+  transport: http('http://127.0.0.1:8545'),
+});
 
+const walletClient = createWalletClient({
+    account,
+    chain: anvil,
+    transport: http('http://127.0.0.1:8545'),
+  });
 // const walletClient = createWalletClient({
-//   // account,
+//   account,
 //   chain: baseSepolia,
 //   transport: http(process.env.ALCHEMY_URL),
 // });
@@ -42,23 +49,41 @@ const CONTRACT =
  * Util Functions
  **************************/
 
-// async function checkBalance(address: any) {
-//   // NEEDS EDIT
-//   // Check balance of contract pot?
-//   try {
-//     const balance = await publicClient.readContract({
-//       address: CONTRACT,
-//       abi: abi.abi,
-//       functionName: 'balanceOf',
-//       args: [address, 0],
-//     });
-//     const readableBalance = Number(balance);
-//     return readableBalance;
-//   } catch (error) {
-//     console.log(error);
-//     return error;
-//   }
-// }
+async function checkEntered(address: any) {
+  // Check if user has paid fee to enter game
+  try {
+    const entered = await publicClient.readContract({
+      address: CONTRACT,
+      abi: abi.abi,
+      functionName: 'isPlayerEntered',
+      args: [address],
+    });
+    const hasEntered = Boolean(entered);
+    return hasEntered;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+}
+
+async function getNonce() {
+  try {
+    const nonce = await publicClient.readContract({
+      address: CONTRACT,
+      abi: abi.abi,
+      functionName: 'getNonce',
+      args: [],
+    });
+    const gameNonce = Number(nonce);
+    return gameNonce;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+}
+
+
+////////////////////////////////
 
 type State = {
   step: 0 | 1 | 2 | 3 | 4;
@@ -89,6 +114,8 @@ const app = new Frog<{ State: State }>({
  **************************/
 
 app.frame('/', async (c) => {
+  // const nonce = await getNonce();
+  // console.log(nonce);
   // Welcome screen
   const { deriveState } = c;
   deriveState((previousState) => {
@@ -96,18 +123,22 @@ app.frame('/', async (c) => {
     previousState.buttons = ['red', 'blue', 'green', 'yellow'];
     previousState.step = 0;
   });
+
+  //QmdeRFEw39zFSCzkin2vyv6CscpTAoWMsT4iKTy6Twiiw1
+  //QmQorsSr5wv8WFyskbF77LaWremnEJYzMpWAAjneR2QKHu
   return c.res({
     action: '/wire1', // button click directs frame to wire1 route
-    image: (
-      <div style={{ color: 'white', display: 'flex', fontSize: 60 }}>
-        Defuse the bomb to win!
-      </div>
-    ),
+    //Image not rendering 
+    image: 'https://ipfs.io/ipfs/QmcBbZN8aoHDWXJEEa5xMVKChKv8zmvNbVBwWSmZZGSdbW',
+    imageAspectRatio: "1:1",
+
     intents: [
-      // test button
+      //test button
       <Button>Play for 0.00069 SEP ETH TEST BUTTON</Button>,
-      // <Button>Play for 0.00069 ETH</Button>,
+      <Button>nonce</Button>,
+      //<Button>Play for 0.00069 ETH</Button>,
     ],
+    // //@todo this is where we need to make the user send us eth
     // intents: [
     //   // transaction button triggers value send
     //   <Button.Transaction target="/collect">
@@ -122,40 +153,40 @@ app.transaction('/collect', async (c) => {
   // Collect fee
   const fee = 0.00069;
 
-  return c.send({
-    // @ts-ignore
-    chainId: 'eip155:84532', // base sepolia testnet
-    to: '0xaddress', // contract address
-    value: parseEther(`${fee}`),
-  });
-
-  // return c.contract({
-  //   abi: abi.abi,
+  // return c.send({
   //   // @ts-ignore
-  //   chainId: "eip155:84532",
-  //   functionName: "start-game",
-  //   args: [c.frameData?.fid],
-  //   to: CONTRACT,
+  //   chainId: 'eip155:84532', // base sepolia testnet
+  //   to: CONTRACT, // contract address
   //   value: parseEther(`${fee}`),
   // });
+
+  return c.contract({
+    abi: abi.abi,
+    // @ts-ignore
+    chainId: "eip155:31337", //base sepolia 84532
+    functionName: "play",
+    args: [],
+    to: CONTRACT,
+    value: parseEther(`${fee}`),
+  });
 });
 
 app.frame('/wire1', (c) => {
   // First game screen
   const { deriveState, previousState } = c;
   // NOTE: Need to gate based on completed payment transaction
-  if (someCondition) {
-    // if not then direct to welcome screen
-    return c.res({
-      action: '/',
-      image: (
-        <div style={{ color: 'white', display: 'flex', fontSize: 60 }}>
-          Looks like some wires got crossed...
-        </div>
-      ),
-      intents: [<Button>Go Home</Button>],
-    });
-  }
+  // if (someCondition) {
+  //   // if not then direct to welcome screen
+  //   return c.res({
+  //     action: '/',
+  //     image: (
+  //       <div style={{ color: 'white', display: 'flex', fontSize: 60 }}>
+  //         Looks like some wires got crossed...
+  //       </div>
+  //     ),
+  //     intents: [<Button>Go Home</Button>],
+  //   });
+  // }
 
   const state = deriveState((previousState) => {
     previousState.step = 1;
@@ -163,11 +194,9 @@ app.frame('/wire1', (c) => {
 
   return c.res({
     action: '/wire2',
-    image: (
-      <div style={{ color: 'white', display: 'flex', fontSize: 60 }}>
-        Cut a wire
-      </div>
-    ),
+    image: 'https://ipfs.io/ipfs/QmQorsSr5wv8WFyskbF77LaWremnEJYzMpWAAjneR2QKHu',
+    imageAspectRatio: "1:1",
+
     intents: state.buttons.map((btn) => <Button value={btn}>{btn}</Button>),
   });
 });
@@ -194,11 +223,10 @@ app.frame('/wire2', (c) => {
     // boom
     return c.res({
       action: '/',
-      image: (
-        <div style={{ color: 'white', display: 'flex', fontSize: 60 }}>
-          Boom!
-        </div>
-      ),
+      image: 'https://ipfs.io/ipfs/QmdeRFEw39zFSCzkin2vyv6CscpTAoWMsT4iKTy6Twiiw1',
+      imageAspectRatio: "1:1",
+
+
       intents: [<Button>Go Home</Button>],
     });
   }
@@ -212,11 +240,9 @@ app.frame('/wire2', (c) => {
 
   return c.res({
     action: '/wire3',
-    image: (
-      <div style={{ color: 'white', display: 'flex', fontSize: 60 }}>
-        Cut a wire
-      </div>
-    ),
+    image: 'https://ipfs.io/ipfs/QmQorsSr5wv8WFyskbF77LaWremnEJYzMpWAAjneR2QKHu',
+    imageAspectRatio: "1:1",
+
     intents: state.buttons.map((btn) => <Button value={btn}>{btn}</Button>),
   });
 });
@@ -234,6 +260,8 @@ app.frame('/wire3', async (c) => {
           Looks like some wires got crossed...
         </div>
       ),
+      imageAspectRatio: "1:1",
+
       intents: [<Button>Go Home</Button>],
     });
   }
@@ -243,11 +271,10 @@ app.frame('/wire3', async (c) => {
     // boom
     return c.res({
       action: '/',
-      image: (
-        <div style={{ color: 'white', display: 'flex', fontSize: 60 }}>
-          Boom!
-        </div>
-      ),
+      image: 'https://ipfs.io/ipfs/QmdeRFEw39zFSCzkin2vyv6CscpTAoWMsT4iKTy6Twiiw1',
+      imageAspectRatio: "1:1",
+
+
       intents: [<Button>Go Home</Button>],
     });
   }
@@ -261,11 +288,9 @@ app.frame('/wire3', async (c) => {
 
   return c.res({
     action: '/final',
-    image: (
-      <div style={{ color: 'white', display: 'flex', fontSize: 60 }}>
-        Cut a wire
-      </div>
-    ),
+    image: 'https://ipfs.io/ipfs/QmQorsSr5wv8WFyskbF77LaWremnEJYzMpWAAjneR2QKHu',
+    imageAspectRatio: "1:1",
+
     intents: state.buttons.map((btn) => <Button value={btn}>{btn}</Button>),
   });
 });
@@ -283,6 +308,8 @@ app.frame('/final', (c) => {
           Looks like some wires got crossed...
         </div>
       ),
+      imageAspectRatio: "1:1",
+
       intents: [<Button>Go Home</Button>],
     });
   }
@@ -292,11 +319,10 @@ app.frame('/final', (c) => {
     // boom
     return c.res({
       action: '/',
-      image: (
-        <div style={{ color: 'white', display: 'flex', fontSize: 60 }}>
-          Boom!
-        </div>
-      ),
+      image: 'https://ipfs.io/ipfs/QmdeRFEw39zFSCzkin2vyv6CscpTAoWMsT4iKTy6Twiiw1',
+      imageAspectRatio: "1:1",
+
+
       intents: [<Button>Go Home</Button>],
     });
   }
@@ -311,11 +337,9 @@ app.frame('/final', (c) => {
   // one button to claim prize (pull from smart contract)
   return c.res({
     action: '/',
-    image: (
-      <div style={{ color: 'white', display: 'flex', fontSize: 60 }}>
-        Winner!
-      </div>
-    ),
+    image: 'https://ipfs.io/ipfs/QmYvgj9cncf5oQrHohpG8nj9bpzeyqoBNo3Tf4mCRco5Qj',
+    imageAspectRatio: "1:1",
+
     intents: [
       <Button.Transaction target="/payout">Collect Payout</Button.Transaction>,
       <Button>Play Again!</Button>,

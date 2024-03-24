@@ -109,4 +109,12 @@ contract BombGame is Ownable {
         if (!success) revert BombGame__TransferFailed();
     }
 
+    function isPlayerEntered(address _player) external view returns (bool) {
+        return isPlaying[_player];
+    }
+
+    function getNonce() external view returns (uint256) {
+        return gameNonce;
+    }
+
 }
