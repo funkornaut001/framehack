@@ -132,42 +132,20 @@ app.frame('/', async (c) => {
     image: 'https://ipfs.io/ipfs/QmcBbZN8aoHDWXJEEa5xMVKChKv8zmvNbVBwWSmZZGSdbW',
     imageAspectRatio: "1:1",
 
-    intents: [
-      //test button
-      <Button>Play for 0.00069 SEP ETH TEST BUTTON</Button>,
-      <Button>nonce</Button>,
-      //<Button>Play for 0.00069 ETH</Button>,
-    ],
-    // //@todo this is where we need to make the user send us eth
     // intents: [
-    //   // transaction button triggers value send
-    //   <Button.Transaction target="/collect">
-    //     Play for 0.00069 SEP ETH
-    //   </Button.Transaction>,
+    //   //test button
+    //   <Button>Play for 0.00069 SEP ETH TEST BUTTON</Button>,
+    //   <Button>nonce</Button>,
+    //   //<Button>Play for 0.00069 ETH</Button>,
     // ],
+    // //@todo this is where we need to make the user send us eth
+    intents: [
+      // transaction button triggers value send
+      <Button.Transaction target="/enter">
+        Play for 0.00069 SEP ETH
+      </Button.Transaction>,
+    ],
     title: 'Defuse The Bomb!',
-  });
-});
-
-app.transaction('/collect', async (c) => {
-  // Collect fee
-  const fee = 0.00069;
-
-  // return c.send({
-  //   // @ts-ignore
-  //   chainId: 'eip155:84532', // base sepolia testnet
-  //   to: CONTRACT, // contract address
-  //   value: parseEther(`${fee}`),
-  // });
-
-  return c.contract({
-    abi: abi.abi,
-    // @ts-ignore
-    chainId: "eip155:31337", //base sepolia 84532
-    functionName: "play",
-    args: [],
-    to: CONTRACT,
-    value: parseEther(`${fee}`),
   });
 });
 
@@ -368,6 +346,30 @@ app.transaction('/payout', async (c) => {
   //   to: CONTRACT,
   //   value: parseEther(`${fee}`),
   // });
+});
+
+
+app.transaction('/enter', async (c) => {
+  console.log('Collect route hit');
+  // enter fee
+  const fee = 0.00069;
+
+  // return c.send({
+  //   // @ts-ignore
+  //   chainId: 'eip155:84532', // base sepolia testnet84532
+  //   to: CONTRACT, // contract address
+  //   value: parseEther(`${fee}`),
+  // });
+
+  return c.contract({
+    abi: abi.abi,
+    // @ts-ignore
+    chainId: "eip155:84532", //base sepolia 84532
+    functionName: "play",
+    args: [],
+    to: CONTRACT,
+    value: parseEther(`${fee}`),
+  });
 });
 
 /**************************
