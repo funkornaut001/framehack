@@ -9,7 +9,7 @@ import { privateKeyToAccount } from 'viem/accounts';
 import { baseSepolia, anvil } from 'viem/chains';
 import { PinataFDK } from 'pinata-fdk';
 import { cutWire } from '../../game/logic';
-import abi from '../../../../contract/out/BombGame.sol/BombGame.json';
+import abi from '../../../utils/abi.json';
 import { getConnectedAddressForUser } from '@/utils/fc';
 import { ethers } from 'ethers';
 
@@ -54,7 +54,7 @@ async function checkEntered(address: any) {
   try {
     const entered = await publicClient.readContract({
       address: CONTRACT,
-      abi: abi.abi,
+      abi: abi,
       functionName: 'isPlayerEntered',
       args: [address],
     });
@@ -70,7 +70,7 @@ async function getNonce() {
   try {
     const nonce = await publicClient.readContract({
       address: CONTRACT,
-      abi: abi.abi,
+      abi: abi,
       functionName: 'getNonce',
       args: [],
     });
@@ -362,7 +362,7 @@ app.transaction('/enter', async (c) => {
   // });
 
   return c.contract({
-    abi: abi.abi,
+    abi: abi,
     // @ts-ignore
     chainId: "eip155:84532", //base sepolia 84532
     functionName: "play",
