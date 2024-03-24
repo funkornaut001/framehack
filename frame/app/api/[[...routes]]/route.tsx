@@ -30,14 +30,14 @@ const account = privateKeyToAccount(
 );
 
 const publicClient = createPublicClient({
-  chain: anvil,
-  transport: http('http://127.0.0.1:8545'),
+  chain: baseSepolia,
+  transport: http(process.env.ALCHEMY_URL),
 });
 
 const walletClient = createWalletClient({
     account,
-    chain: anvil,
-    transport: http('http://127.0.0.1:8545'),
+    chain: baseSepolia,
+    transport: http(process.env.ALCHEMY_URL),
   });
 // const walletClient = createWalletClient({
 //   account,
