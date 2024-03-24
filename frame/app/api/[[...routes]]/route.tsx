@@ -10,8 +10,8 @@ import { baseSepolia, anvil } from 'viem/chains';
 import { PinataFDK } from 'pinata-fdk';
 import { cutWire } from '../../game/logic';
 import abi from '../../../utils/abi.json';
-import { getConnectedAddressForUser } from '@/utils/fc';
-import { ethers } from 'ethers';
+// import { getConnectedAddressForUser } from '@/utils/fc';
+// import { ethers } from 'ethers';
 
 /**************************
  * Inital Setup
