@@ -41,7 +41,7 @@ const config = getDefaultConfig({
     ssr: true,
     
 });
-console.log(config);
+//console.log(config);
 
 const queryClient = new QueryClient();
 
